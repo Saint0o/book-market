@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.geekbrains.mini.market.geekbrainsminimarket.dto.AuthorDto;
+import ru.geekbrains.mini.market.geekbrainsminimarket.dto.BookDto;
 import ru.geekbrains.mini.market.geekbrainsminimarket.entities.Book;
 import ru.geekbrains.mini.market.geekbrainsminimarket.exceptions.MarketError;
 import ru.geekbrains.mini.market.geekbrainsminimarket.exceptions.ResourceNotFoundException;
@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/books")
-@Api("Set of endpoints for products")
+@Api("Set of endpoints for books")
 public class BookController {
     private BookService bookService;
 
@@ -27,42 +27,46 @@ public class BookController {
     }
 
     @GetMapping
-    @ApiOperation("Returns all products")
-    public List<Book> getAllProducts() {
-        return bookService.getAllProducts();
+    @ApiOperation("Returns all books")
+    public List<Book> getAllBooks() {
+        return bookService.getAllBooks();
     }
 
+    //GET http://localhost:9999/market/api/v1/books/1
     @GetMapping("/{id}")
-    @ApiOperation("Returns a specific product by their identifier. 404 if does not exist.")
-    public AuthorDto getProductById(@ApiParam("Id of the book to be obtained. Cannot be empty.") @PathVariable Long id) {
-        Book p = bookService.getOneById(id).orElseThrow(() -> new ResourceNotFoundException("Unable to find product with id: " + id));
-        return new AuthorDto(p);
+    @ApiOperation("Returns a specific book by their identifier. 404 if does not exist.")
+    public BookDto getBookById(@ApiParam("Id of the book to be obtained. Cannot be empty.") @PathVariable Long id) {
+        Book b = bookService.getOneById(id).orElseThrow(() -> new ResourceNotFoundException("Unable to find book with id: " + id));
+        return new BookDto(b);
     }
 
+    //POST http://localhost:9999/market/api/v1/books/
     @PostMapping
-    @ApiOperation("Creates a new product. If id != null, then throw bad request response")
-    public ResponseEntity<?> createNewProduct(@RequestBody Book p) {
-        if (p.getId() != null) {
+    @ApiOperation("Creates a new book. If id != null, then throw bad request response")
+    public ResponseEntity<?> createNewBook(@RequestBody Book book) {
+        if (book.getId() != null) {
             return new ResponseEntity<>(new MarketError(HttpStatus.BAD_REQUEST.value(), "Id must be null for new entity"), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(bookService.save(p), HttpStatus.CREATED);
+        return new ResponseEntity<>(bookService.save(book), HttpStatus.CREATED);
     }
 
+    //PUT http://localhost:9999/market/api/v1/books/
     @PutMapping
-    @ApiOperation("Modify product")
-    public ResponseEntity<?> modifyProduct(@RequestBody Book p) {
-        if (p.getId() == null) {
+    @ApiOperation("Modify book")
+    public ResponseEntity<?> modifyBook(@RequestBody Book book) {
+        if (book.getId() == null) {
             return new ResponseEntity<>(new MarketError(HttpStatus.BAD_REQUEST.value(), "Id must be not null for new entity"), HttpStatus.BAD_REQUEST);
         }
-        if (!bookService.existsById(p.getId())) {
-            return new ResponseEntity<>(new MarketError(HttpStatus.BAD_REQUEST.value(), "Product with id: " + p.getId() + " doesn't exist"), HttpStatus.BAD_REQUEST);
+        if (!bookService.existsById(book.getId())) {
+            return new ResponseEntity<>(new MarketError(HttpStatus.BAD_REQUEST.value(), "Book with id: " + book.getId() + " doesn't exist"), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(bookService.save(p), HttpStatus.OK);
+        return new ResponseEntity<>(bookService.save(book), HttpStatus.OK);
     }
 
+    //DELETE http://localhost:9999/market/api/v1/books/1
     @DeleteMapping("/{id}")
-    @ApiOperation("Delete product")
-    public void deleteById(@ApiParam("Id of the product") @PathVariable Long id) {
+    @ApiOperation("Delete book")
+    public void deleteById(@ApiParam("Id of the book") @PathVariable Long id) {
         bookService.deleteById(id);
     }
 }

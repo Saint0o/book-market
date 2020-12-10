@@ -16,8 +16,8 @@ public class Author {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "title")
-    private String title;
+    @Column(name = "name")
+    private String name;
 
     @OneToMany(mappedBy = "author")
     private List<Book> books;

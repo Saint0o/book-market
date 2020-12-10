@@ -15,7 +15,7 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("ru.geekbrains.mini.market.geekbrainsmarket.controllers"))
+                .apis(RequestHandlerSelectors.basePackage("ru.geekbrains.mini.market.geekbrainsminimarket.controllers"))
                 .paths(PathSelectors.regex("/api.*"))
                 .build();
     }

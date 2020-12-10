@@ -18,7 +18,7 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public List<Book> getAllProducts() {
+    public List<Book> getAllBooks() {
         return bookRepository.findAll();
     }
 
